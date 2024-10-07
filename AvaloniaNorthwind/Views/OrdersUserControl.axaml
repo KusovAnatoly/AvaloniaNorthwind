@@ -1,0 +1,101 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:m="using:AvaloniaNorthwind.Models"
+             xmlns:vm="using:AvaloniaNorthwind.ViewModels"
+             xmlns:c="using:AvaloniaNorthwind.Converters"
+			 mc:Ignorable="d"
+			 d:DesignWidth="800"
+			 d:DesignHeight="450"
+			 x:DataType="vm:OrdersUserControlViewModel"
+             x:Class="AvaloniaNorthwind.OrdersUserControl">
+
+	<UserControl.Resources>
+		<c:OrderItemSumConverter x:Key="oiConverter" />
+	</UserControl.Resources>
+	
+	<Grid RowDefinitions="Auto *">
+
+		<ScrollViewer Grid.Row="1">
+
+			<ListBox ItemsSource="{Binding Orders}">
+
+				<ListBox.ItemTemplate>
+
+					<DataTemplate>
+
+						<StackPanel>
+
+							<TextBlock x:DataType="m:Order">
+								<Run Text="{Binding OrderId}"/>
+								<Run Text=" - "/>
+								<Run Text="{Binding OrderDate}"/>
+								<LineBreak/>
+								<Run Text="Детали"/>
+								<LineBreak/>
+							</TextBlock>
+
+							<ItemsControl x:DataType="m:Order" ItemsSource="{Binding OrderDetails}">
+								
+								<ItemsControl.ItemTemplate>
+									
+									<DataTemplate>
+
+										<StackPanel>
+											
+											<TextBlock x:DataType="m:OrderDetail">
+
+												<Run Text="{Binding Product.ProductName}"/>
+
+												<Run Text="—"/>
+
+												<Run Text="{Binding UnitPrice, StringFormat={}{0:C}, ConverterCulture=ru-RU}"/>
+
+												<Run Text="×"/>
+
+												<Run Text="{Binding Quantity}"/>
+
+												<Run Text="—"/>
+
+											</TextBlock>
+
+											<TextBlock  x:DataType="m:OrderDetail">
+												
+												<TextBlock.Text>
+													
+													<MultiBinding Converter="{StaticResource oiConverter}">
+														
+														<Binding Path="UnitPrice"/>
+														
+														<Binding Path="Quantity"/>
+														
+														<Binding Path="Discount"/>
+														
+													</MultiBinding>
+													
+												</TextBlock.Text>
+												
+											</TextBlock>
+											
+										</StackPanel>
+										
+									</DataTemplate>
+									
+								</ItemsControl.ItemTemplate>
+								
+							</ItemsControl>
+
+						</StackPanel>
+
+					</DataTemplate>
+
+				</ListBox.ItemTemplate>
+
+			</ListBox>
+
+		</ScrollViewer>
+
+	</Grid>
+
+</UserControl>

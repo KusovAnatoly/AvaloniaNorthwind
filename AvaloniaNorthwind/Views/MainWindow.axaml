@@ -9,14 +9,21 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="AvaloniaNorthwind">
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
 
-	<Grid>
-		
+	<Grid RowDefinitions="Auto *">
+		<Menu Grid.Row="0">
+			<MenuItem Header="_Заказы" Command="{Binding OpenViewCommand}" CommandParameter="Orders"/>
+			<MenuItem Header="_Товары" Command="{Binding OpenViewCommand}" CommandParameter="Products"/>
+			<MenuItem Header="_Клиенты" Command="{Binding OpenViewCommand}" CommandParameter="Customers"/>
+			<MenuItem Header="_Поставщики" Command="{Binding OpenViewCommand}" CommandParameter="Suppliers"/>
+			<MenuItem Header="_Грузоотправители" Command="{Binding OpenViewCommand}" CommandParameter="Shippers"/>
+		</Menu>
+		<ContentControl Grid.Row="1" Margin="10" Content="{Binding CurrentView}"/>
 	</Grid>
 
 </Window>
