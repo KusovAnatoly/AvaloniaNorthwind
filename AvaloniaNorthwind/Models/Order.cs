@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace AvaloniaNorthwind.Models;
 
@@ -32,6 +34,9 @@ public partial class Order
     public string? ShipPostalCode { get; set; }
 
     public string? ShipCountry { get; set; }
+
+    [NotMapped]
+    public float Sum => OrderDetails.AsEnumerable().Sum(x => x.Sum);
 
     public virtual Customer? Customer { get; set; }
 
