@@ -5,6 +5,9 @@
              xmlns:m="using:AvaloniaNorthwind.Models"
              xmlns:vm="using:AvaloniaNorthwind.ViewModels"
              xmlns:c="using:AvaloniaNorthwind.Converters"
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+             xmlns:pr="clr-namespace:AvaloniaProgressRing;assembly=AvaloniaProgressRing"
 			 mc:Ignorable="d"
 			 d:DesignWidth="800"
 			 d:DesignHeight="450"
@@ -14,67 +17,62 @@
 	<UserControl.Resources>
 		<c:PriceConverter x:Key="pConverter" />
 	</UserControl.Resources>
-	
+
 	<Grid RowDefinitions="Auto *">
 
-		<ScrollViewer Grid.Row="1">
+		<pr:ProgressRing Width="80"
+						 Height="80"
+						 Grid.RowSpan="2"
+						 IsActive="{Binding IsLoading}"
+						 HorizontalAlignment="Center"
+						 VerticalAlignment="Center"
+						 Foreground="Purple"
+						 Margin="10,20,0,0"/>
 
-			<ListBox ItemsSource="{Binding Orders}">
+		<TextBox Grid.Row="0"
+				 Text="{Binding SearchQuery}"
+				 Watermark="Введите дату заказа, имя или номер клиента">
 
-				<ListBox.ItemTemplate>
+			<i:Interaction.Behaviors>
 
-					<DataTemplate>
+				<ia:EventTriggerBehavior EventName="TextChanged">
 
-						<StackPanel>
+					<ia:InvokeCommandAction Command="{Binding AsyncLoadOrdersCommand}"/>
 
-							<TextBlock x:DataType="m:Order" Margin="0, 5">
-								<Run Text="{Binding OrderId}" FontWeight="Black"/>
-								<Run Text=" - "/>
-								<Run Text="{Binding OrderDate}" FontStyle="Italic"/>
-								<LineBreak/>
-								<Run Text="Детали" FontWeight="Bold"/>
-							</TextBlock>
+				</ia:EventTriggerBehavior>
 
-							<ItemsControl x:DataType="m:Order" ItemsSource="{Binding OrderDetails}">
-								
-								<ItemsControl.ItemTemplate>
-									
-									<DataTemplate>
+			</i:Interaction.Behaviors>
 
-										<StackPanel x:DataType="m:OrderDetail" Orientation="Horizontal">
+		</TextBox>
 
-											<TextBlock Text="{Binding Product.ProductName}"/>
+		<DataGrid ItemsSource="{Binding Orders}"
+				  AutoGenerateColumns="False"
+				  IsReadOnly="True"
+				  Grid.Row="1">
 
-											<TextBlock Text=" — "/>
+			<DataGrid.Styles>
 
-											<TextBlock Text="{Binding UnitPrice, Converter={StaticResource pConverter}}"/>
+				<Style Selector="TextBlock">
 
-											<TextBlock Text=" × "/>
+					<Setter Property="TextWrapping" Value="Wrap" />
 
-											<TextBlock Text="{Binding Quantity}"/>
+				</Style>
 
-											<TextBlock Text=" — "/>
+			</DataGrid.Styles>
 
-											<TextBlock Text="{Binding Sum, Converter={StaticResource pConverter}}"/>
-											
-										</StackPanel>
-										
-									</DataTemplate>
-									
-								</ItemsControl.ItemTemplate>
-								
-							</ItemsControl>
-							<TextBlock x:DataType="m:Order" Margin="0, 5" Text="{Binding Sum, Converter={StaticResource pConverter}}"/>
+			<DataGrid.Columns>
 
-						</StackPanel>
+				<DataGridTextColumn x:DataType="m:Order" MaxWidth="200" Header="ID"						Binding="{Binding OrderId}"/>
+				<DataGridTextColumn x:DataType="m:Order" MaxWidth="200" Header="Дата заказа"			Binding="{Binding OrderDate}"/>
+				<DataGridTextColumn x:DataType="m:Order" MaxWidth="200" Header="Дата (требуется)"		Binding="{Binding RequiredDate}"/>
+				<DataGridTextColumn x:DataType="m:Order" MaxWidth="200" Header="Компания"				Binding="{Binding Customer.CompanyName}"/>
+				<DataGridTextColumn x:DataType="m:Order" MaxWidth="200" Header="Контакт"				Binding="{Binding Customer.ContactName}"/>
+				<DataGridTextColumn x:DataType="m:Order" MaxWidth="200" Header="Телефон"				Binding="{Binding Customer.Phone}"/>
+				<DataGridTextColumn x:DataType="m:Order" MaxWidth="200" Header="Сумма"					Binding="{Binding Sum, Converter={StaticResource pConverter}}"/>
 
-					</DataTemplate>
+			</DataGrid.Columns>
 
-				</ListBox.ItemTemplate>
-
-			</ListBox>
-
-		</ScrollViewer>
+		</DataGrid>
 
 	</Grid>
 
