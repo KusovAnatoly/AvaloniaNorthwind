@@ -15,7 +15,9 @@
              x:Class="AvaloniaNorthwind.OrdersUserControl">
 
 	<UserControl.Resources>
+		
 		<c:PriceConverter x:Key="pConverter" />
+		
 	</UserControl.Resources>
 
 	<Grid RowDefinitions="Auto *">
