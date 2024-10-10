@@ -3,7 +3,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://github.com/KusovAnatoly/AvaloniaNorthwind/tree/main/AvaloniaNorthwind">
     <img src="Images/logo.svg" alt="Logo" width="80" height="80">
   </a>
 
@@ -46,7 +46,7 @@
 <!-- ABOUT THE PROJECT -->
 ## О проекте
 
-[![Product Name Screen Shot][product-screenshot]](https://AvaloniaNorthwind.com)
+[![Product Name Screen Shot][product-screenshot]](https://raw.githubusercontent.com/KusovAnatoly/AvaloniaNorthwind/refs/heads/main/Images/App%20Screenshot.png)
 
 Это учебное приложение демонстрирует разработку настольного приложения на основе базы данных Northwind с использованием современных технологий, таких как .NET 8, Entity Framework Core, Avalonia и PostgreSQL. Приложение служит примером для студентов, как интегрировать различные слои приложения — от базы данных до пользовательского интерфейса.
 
