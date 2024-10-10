@@ -1,18 +1,19 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:m="using:AvaloniaNorthwind.Models"
-             xmlns:vm="using:AvaloniaNorthwind.ViewModels"
-             xmlns:c="using:AvaloniaNorthwind.Converters"
-             xmlns:i="using:Avalonia.Xaml.Interactivity"
-             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
-             xmlns:pr="clr-namespace:AvaloniaProgressRing;assembly=AvaloniaProgressRing"
-			 mc:Ignorable="d"
-			 d:DesignWidth="800"
-			 d:DesignHeight="450"
-			 x:DataType="vm:OrdersUserControlViewModel"
-             x:Class="AvaloniaNorthwind.OrdersUserControl">
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:m="using:AvaloniaNorthwind.Models"
+	xmlns:vm="using:AvaloniaNorthwind.ViewModels"
+	xmlns:c="using:AvaloniaNorthwind.Converters"
+	xmlns:i="using:Avalonia.Xaml.Interactivity"
+	xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+	xmlns:pr="clr-namespace:AvaloniaProgressRing;assembly=AvaloniaProgressRing"
+	mc:Ignorable="d"
+	d:DesignWidth="1200"
+	d:DesignHeight="450"
+	MinWidth="300"
+	x:DataType="vm:OrdersUserControlViewModel"
+	x:Class="AvaloniaNorthwind.OrdersUserControl">
 
 	<UserControl.Resources>
 
@@ -23,51 +24,69 @@
 	<Grid RowDefinitions="Auto *">
 
 		<pr:ProgressRing Width="80"
-						 Height="80"
-						 Grid.RowSpan="2"
-						 IsActive="{Binding IsLoading}"
-						 HorizontalAlignment="Center"
-						 VerticalAlignment="Center"
-						 Foreground="Purple"
-						 Margin="10,20,0,0"/>
+			Height="80"
+			Grid.RowSpan="2"
+			IsActive="{Binding IsLoading}"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
+			Foreground="{DynamicResource SystemAccentColor}"
+			Margin="10,20,0,0" />
 
-		<Grid Grid.Row="0" ColumnDefinitions="* Auto Auto Auto">
-			
+		<WrapPanel Margin="0,0,0,10">
+
 			<TextBox Text="{Binding SearchQuery}"
-					 Watermark="Введите дату заказа, имя или номер клиента"
-					 Grid.Column="0">
+				VerticalAlignment="Center"
+				Margin="5,0,5,10"
+				Watermark="Введите ID заказа, имя или номер клиента"
+				MinWidth="300">
 
 				<i:Interaction.Behaviors>
 
 					<ia:EventTriggerBehavior EventName="TextChanged">
 
-						<ia:InvokeCommandAction Command="{Binding AsyncLoadOrdersCommand}"/>
+						<ia:InvokeCommandAction Command="{Binding AsyncLoadOrdersCommand}" />
 
 					</ia:EventTriggerBehavior>
 
 				</i:Interaction.Behaviors>
 
 			</TextBox>
-			
-			<DatePicker Grid.Column="1" Margin="5, 0, 2.5, 0" SelectedDate="{Binding Date}" MinWidth="150"/>
-			
-			<DatePicker Grid.Column="2" Margin="2.5, 0, 2.5, 0" SelectedDate="{Binding DateRequired}" MinWidth="150"/>
-			
-			<Button Grid.Column="3" Margin="2.5, 0, 0, 0" Command="{Binding ClearFiltersCommand}" Content="Очистить" HorizontalContentAlignment="Center" MinWidth="100"/>
-			
-			
-		</Grid>
+
+			<DatePicker x:Name="DatePicker"
+				VerticalAlignment="Center"
+				Margin="5, 0, 5, 10"
+				SelectedDate="{Binding Date}" />
+
+			<DatePicker Margin="5, 0, 5, 10"
+				VerticalAlignment="Center"
+				SelectedDate="{Binding DateRequired}" />
+
+			<Button Margin="5, 0, 0, 10"
+				HorizontalContentAlignment="Center"
+				Command="{Binding ClearFiltersCommand}"
+				Content="Очистить"
+				MinWidth="100" />
+
+			<Button Margin="5, 0, 0, 10"
+				HorizontalContentAlignment="Center"
+				IsVisible="{Binding !CanConnect}"
+				Command="{Binding AsyncLoadOrdersCommand}"
+				Content="Обновить"
+				MinWidth="100" />
+
+		</WrapPanel>
 
 		<DataGrid ItemsSource="{Binding Orders}"
-				  AutoGenerateColumns="False"
-				  IsReadOnly="True"
-				  Grid.Row="1">
+			AutoGenerateColumns="False"
+			IsReadOnly="True"
+			Grid.Row="1">
 
 			<DataGrid.Styles>
 
 				<Style Selector="TextBlock">
 
-					<Setter Property="TextWrapping" Value="Wrap" />
+					<Setter Property="TextWrapping"
+						Value="Wrap" />
 
 				</Style>
 
@@ -75,13 +94,34 @@
 
 			<DataGrid.Columns>
 
-				<DataGridTextColumn x:DataType="m:Order" MaxWidth="200" Header="ID"						Binding="{Binding OrderId}"/>
-				<DataGridTextColumn x:DataType="m:Order" MaxWidth="200" Header="Дата заказа"			Binding="{Binding OrderDate}"/>
-				<DataGridTextColumn x:DataType="m:Order" MaxWidth="200" Header="Дата (требуется)"		Binding="{Binding RequiredDate}"/>
-				<DataGridTextColumn x:DataType="m:Order" MaxWidth="200" Header="Компания"				Binding="{Binding Customer.CompanyName}"/>
-				<DataGridTextColumn x:DataType="m:Order" MaxWidth="200" Header="Контакт"				Binding="{Binding Customer.ContactName}"/>
-				<DataGridTextColumn x:DataType="m:Order" MaxWidth="200" Header="Телефон"				Binding="{Binding Customer.Phone}"/>
-				<DataGridTextColumn x:DataType="m:Order" MaxWidth="200" Header="Сумма"					Binding="{Binding Sum, Converter={StaticResource pConverter}}"/>
+				<DataGridTextColumn x:DataType="m:Order"
+					MaxWidth="200"
+					Header="ID"
+					Binding="{Binding OrderId}" />
+				<DataGridTextColumn x:DataType="m:Order"
+					MaxWidth="200"
+					Header="Дата заказа"
+					Binding="{Binding OrderDate}" />
+				<DataGridTextColumn x:DataType="m:Order"
+					MaxWidth="200"
+					Header="Дата (требуется)"
+					Binding="{Binding RequiredDate}" />
+				<DataGridTextColumn x:DataType="m:Order"
+					MaxWidth="200"
+					Header="Компания"
+					Binding="{Binding Customer.CompanyName}" />
+				<DataGridTextColumn x:DataType="m:Order"
+					MaxWidth="200"
+					Header="Контакт"
+					Binding="{Binding Customer.ContactName}" />
+				<DataGridTextColumn x:DataType="m:Order"
+					MaxWidth="200"
+					Header="Телефон"
+					Binding="{Binding Customer.Phone}" />
+				<DataGridTextColumn x:DataType="m:Order"
+					MaxWidth="200"
+					Header="Сумма"
+					Binding="{Binding Sum, Converter={StaticResource pConverter}}" />
 
 			</DataGrid.Columns>
 
