@@ -12,7 +12,7 @@
   <p align="center">
     ERP-приложение на основе технологий .NET, C#, Avalonia, EF Core, PostgreSQL
     <br />
-    <a href="https://github.com/KusovAnatoly/AvaloniaNorthwind/tree/main/AvaloniaNorthwind"><strong>Explore the source code here »</strong></a>
+    <a href="https://github.com/KusovAnatoly/AvaloniaNorthwind/tree/main/AvaloniaNorthwind"><strong>Исследуйте исходный код здесь »</strong></a>
   </p>
 </div>
 
