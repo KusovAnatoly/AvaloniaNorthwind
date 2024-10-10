@@ -15,9 +15,9 @@
              x:Class="AvaloniaNorthwind.OrdersUserControl">
 
 	<UserControl.Resources>
-		
+
 		<c:PriceConverter x:Key="pConverter" />
-		
+
 	</UserControl.Resources>
 
 	<Grid RowDefinitions="Auto *">
@@ -31,21 +31,32 @@
 						 Foreground="Purple"
 						 Margin="10,20,0,0"/>
 
-		<TextBox Grid.Row="0"
-				 Text="{Binding SearchQuery}"
-				 Watermark="Введите дату заказа, имя или номер клиента">
+		<Grid Grid.Row="0" ColumnDefinitions="* Auto Auto Auto">
+			
+			<TextBox Text="{Binding SearchQuery}"
+					 Watermark="Введите дату заказа, имя или номер клиента"
+					 Grid.Column="0">
 
-			<i:Interaction.Behaviors>
+				<i:Interaction.Behaviors>
 
-				<ia:EventTriggerBehavior EventName="TextChanged">
+					<ia:EventTriggerBehavior EventName="TextChanged">
 
-					<ia:InvokeCommandAction Command="{Binding AsyncLoadOrdersCommand}"/>
+						<ia:InvokeCommandAction Command="{Binding AsyncLoadOrdersCommand}"/>
 
-				</ia:EventTriggerBehavior>
+					</ia:EventTriggerBehavior>
 
-			</i:Interaction.Behaviors>
+				</i:Interaction.Behaviors>
 
-		</TextBox>
+			</TextBox>
+			
+			<DatePicker Grid.Column="1" Margin="5, 0, 2.5, 0" SelectedDate="{Binding Date}" MinWidth="150"/>
+			
+			<DatePicker Grid.Column="2" Margin="2.5, 0, 2.5, 0" SelectedDate="{Binding DateRequired}" MinWidth="150"/>
+			
+			<Button Grid.Column="3" Margin="2.5, 0, 0, 0" Command="{Binding ClearFiltersCommand}" Content="Очистить" HorizontalContentAlignment="Center" MinWidth="100"/>
+			
+			
+		</Grid>
 
 		<DataGrid ItemsSource="{Binding Orders}"
 				  AutoGenerateColumns="False"

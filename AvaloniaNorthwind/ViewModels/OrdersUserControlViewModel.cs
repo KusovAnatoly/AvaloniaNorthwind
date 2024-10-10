@@ -3,6 +3,7 @@ using AvaloniaNorthwind.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -25,12 +26,25 @@ public partial class OrdersUserControlViewModel : ViewModelBase
     [ObservableProperty]
     private string _searchQuery;
 
+    [ObservableProperty]
+    private DateTimeOffset? _date;
+
+    [ObservableProperty]
+    private DateTimeOffset? _dateRequired;
+
     public OrdersUserControlViewModel()
     {
         AsyncLoadOrdersCommand = new AsyncRelayCommand(LoadOrdersAsync);
         Task.Run(LoadOrdersAsync);
     }
 
+    [RelayCommand]
+    private void ClearFilters()
+    {
+        Date = null;
+        DateRequired = null;
+        SearchQuery = string.Empty;
+    }
 
     private async Task LoadOrdersAsync()
     {
@@ -47,31 +61,34 @@ public partial class OrdersUserControlViewModel : ViewModelBase
     {
         using var dbContext = new NorthwindContext();
 
+        var orders = dbContext.Orders
+                                             .Include(x => x.OrderDetails)
+                                             .Include(x => x.Customer)
+                                             .AsQueryable()
+                                             .AsNoTracking();
+
         if (!string.IsNullOrEmpty(SearchQuery))
         {
-            var orders = dbContext.Orders
-                                                 .Include(x => x.OrderDetails)
-                                                 .Include(x => x.Customer)
-                                                 .AsQueryable()
-                                                 .AsNoTracking();
 
             orders = orders.Where(order =>
-                order.Customer.ContactName.Contains(SearchQuery) ||
-                //order.OrderDate.Value.ToString("dd.MM.yyyy").Contains(SearchQuery) ||
-                //order.RequiredDate.Value.ToString("dd.MM.yyyy").Contains(SearchQuery) ||
-                order.Customer.CompanyName.Contains(SearchQuery) ||
-                order.Customer.ContactName.Contains(SearchQuery) ||
+                order.OrderId.ToString().ToLower().Contains(SearchQuery.ToLower()) ||
+                order.Customer.ContactName.ToLower().Contains(SearchQuery.ToLower()) ||
+                order.Customer.CompanyName.ToLower().Contains(SearchQuery.ToLower()) ||
+                order.Customer.ContactName.ToLower().Contains(SearchQuery.ToLower()) ||
                 order.Customer.Phone.Contains(SearchQuery)
             );
-
-            return await orders.ToListAsync();
         }
 
-        return await dbContext.Orders
-                        .Include(x => x.OrderDetails)
-                        .Include(x => x.Customer)
-                        .AsQueryable()
-                        .AsNoTracking()
-                        .ToListAsync();
+        if (Date is not null)
+        {
+            orders = orders.Where(order => order.OrderDate == DateOnly.FromDateTime(Date.Value.Date));
+        }
+
+        if (DateRequired is not null)
+        {
+            orders = orders.Where(order => order.RequiredDate == DateOnly.FromDateTime(DateRequired.Value.Date));
+        }
+
+        return await orders.ToListAsync();
     }
 }
