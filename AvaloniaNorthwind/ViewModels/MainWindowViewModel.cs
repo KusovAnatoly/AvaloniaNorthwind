@@ -25,7 +25,7 @@ public partial class MainWindowViewModel : ViewModelBase
             case "Customers":
                 CurrentView = new OrdersUserControl();
                 break;
-            case "Supplier":
+            case "Suppliers":
                 CurrentView = new OrdersUserControl();
                 break;
             case "Shippers":
